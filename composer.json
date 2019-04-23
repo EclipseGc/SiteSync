@@ -1,0 +1,18 @@
+{
+    "name": "eclipsegc/site-sync",
+    "description": "A utility for syncing and managing remote Drupal applications for local development.",
+    "type": "project",
+    "require": {
+        "symfony/console": "^4.2",
+        "symfony/yaml": "^4.2",
+        "symfony/filesystem": "^4.3@dev",
+        "symfony/process": "^4.3@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "EclipseGc\\SiteSync\\": "src"
+        }
+    },
+    "license": "GPL 2+",
+    "minimum-stability": "dev"
+}
