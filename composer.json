@@ -6,7 +6,10 @@
         "symfony/console": "^4.2",
         "symfony/yaml": "^4.2",
         "symfony/filesystem": "^4.3@dev",
-        "symfony/process": "^4.3@dev"
+        "symfony/process": "^4.3@dev",
+        "symfony/event-dispatcher": "^4.3@dev",
+        "symfony/dependency-injection": "^4.3@dev",
+        "symfony/config": "^4.3@dev"
     },
     "autoload": {
         "psr-4": {

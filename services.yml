@@ -1,0 +1,14 @@
+services:
+  event_dispatcher:
+    class: \Symfony\Component\EventDispatcher\EventDispatcher
+    public: true
+  sitesync.type.aegir:
+    class: \EclipseGc\SiteSync\EventSubscriber\Type\Aegir
+    public: true
+    tags:
+      - { name: kernel.event_subscriber }
+  sitesync.type.drupal:
+    class: \EclipseGc\SiteSync\EventSubscriber\Type\DrupalSsh
+    public: true
+    tags:
+      - { name: kernel.event_subscriber }

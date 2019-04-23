@@ -6,9 +6,12 @@ use EclipseGc\SiteSync\Command\Initialize;
 use EclipseGc\SiteSync\Command\Pull;
 use Symfony\Component\Console\Application;
 
+/** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
+$container = include __DIR__ .'/../includes/container.php';
+
 $application = new Application('siteSync', '0.0.1');
 
-$application->add(new Initialize());
+$application->add(new Initialize(NULL, $container->get('event_dispatcher')));
 $application->add(new Pull());
 
 $application->run();
