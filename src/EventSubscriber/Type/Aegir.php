@@ -22,8 +22,8 @@ class Aegir implements EventSubscriberInterface {
   }
 
   public function onGetTypeClass(GetTypeClassEvent $event) {
-    if ($event->getType() === "Aegir") {
-      $event->setTypeObject(new AegirType());
+    if ($event->getConfiguration()['type'] === "Aegir") {
+      $event->setTypeObject(new AegirType($event->getConfiguration()));
       $event->stopPropagation();
     }
   }

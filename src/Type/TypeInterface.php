@@ -10,8 +10,10 @@ interface TypeInterface {
   /**
    * @return \Symfony\Component\Console\Question\Question[]
    */
-  public function getQuestions();
+  public function getQuestions() : array ;
 
-  public function pull(InputInterface $input, OutputInterface $output);
+  public function pull(InputInterface $input, OutputInterface $output) : void ;
+
+  public function getLocalSettingsFileLocation() : string ;
 
 }

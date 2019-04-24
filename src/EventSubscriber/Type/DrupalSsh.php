@@ -24,8 +24,8 @@ class DrupalSsh implements EventSubscriberInterface {
   }
 
   public function onGetTypeClass(GetTypeClassEvent $event) {
-    if ($event->getType() === $this::LABEL) {
-      $event->setTypeObject(new Drupal());
+    if ($event->getConfiguration()['type'] === $this::LABEL) {
+      $event->setTypeObject(new Drupal($event->getConfiguration()));
       $event->stopPropagation();
     }
   }

@@ -8,21 +8,23 @@ use Symfony\Component\EventDispatcher\Event;
 class GetTypeClassEvent extends Event {
 
   /**
-   * @var string
+   * The siteSync configuration.
+   *
+   * @var array
    */
-  protected $type;
+  protected $configuration;
 
   /**
    * @var \EclipseGc\SiteSync\Type\TypeInterface
    */
   protected $typeObject;
 
-  public function __construct(string $type) {
-    $this->type = $type;
+  public function __construct(array $configuration) {
+    $this->configuration = $configuration;
   }
 
-  public function getType() {
-    return $this->type;
+  public function getConfiguration() {
+    return $this->configuration;
   }
 
   public function setTypeObject(TypeInterface $typeObject) {
