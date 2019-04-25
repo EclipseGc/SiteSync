@@ -18,4 +18,6 @@ interface TypeInterface {
 
   public function getLocalSettingsFileLocation() : string ;
 
+  public function getDump(OutputInterface $output);
+
 }

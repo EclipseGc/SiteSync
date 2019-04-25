@@ -75,14 +75,14 @@ class Aegir extends TypeBase {
     return $exclusions;
   }
 
-  protected function getDump(OutputInterface $output) {
+  public function getDump(OutputInterface $output) {
     $settings = $this->getLocalSettingsFileLocation();
     $parts = explode(DIRECTORY_SEPARATOR, $settings);
     array_pop($parts);
     $drush_rc_parts = $parts;
     $drush_rc_parts[] = "drushrc.php";
     $drushrc_location = implode(DIRECTORY_SEPARATOR, $drush_rc_parts);
-    if (!$this->fs->exists($drushrc_location)) {
+    if (!$this->getFileSystem()->exists($drushrc_location)) {
       $output->writeln("<warning>Missing drushrc.php at $drushrc_location.</warning>");
       throw new \RuntimeException("Missing drushrc.php");
     }

@@ -31,4 +31,8 @@ class Drupal extends TypeBase {
     // TODO: Implement getLocalSettingsFileLocation() method.
   }
 
+  public function getDump(OutputInterface $output) {
+
+  }
+
 }

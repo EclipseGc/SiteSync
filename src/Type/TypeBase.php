@@ -29,7 +29,7 @@ abstract class TypeBase implements TypeInterface {
 
   protected function getEnvironmentObject() {
     $environmentObjectEvent = new GetEnvironmentObjectEvent($this->configuration, $this);
-    $this->dispatcher->dispatch(SiteSyncEvents::GET_ENVIRONMENT_OBJECT, $environmentObjectEvent);
+    $this->dispatcher->dispatch($environmentObjectEvent, SiteSyncEvents::GET_ENVIRONMENT_OBJECT);
     return $environmentObjectEvent->getEnvironmentObject();
   }
 
