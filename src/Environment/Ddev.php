@@ -50,7 +50,7 @@ class Ddev implements EnvironmentInterface {
       if (!is_numeric($value)) {
         throw new \RuntimeException("The http port number should be an integer.");
       }
-      return TRUE;
+      return $value;
     });
     $questions['ddev_https_port'] = new Question("HTTPS port:", 443);
     $questions['ddev_https_port']->setValidator($questions['ddev_http_port']->getValidator());
