@@ -14,6 +14,8 @@ interface TypeInterface {
 
   public function pull(InputInterface $input, OutputInterface $output) : void ;
 
+  public function getProjectType() : string ;
+
   public function getLocalSettingsFileLocation() : string ;
 
 }

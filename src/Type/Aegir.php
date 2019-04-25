@@ -2,6 +2,7 @@
 
 namespace EclipseGc\SiteSync\Type;
 
+use EclipseGc\SiteSync\Action\DumpRemoteDatabaseViaSsh;
 use EclipseGc\SiteSync\Action\PrepareLocalDirectory;
 use EclipseGc\SiteSync\Action\RsyncDirectory;
 use EclipseGc\SiteSync\Action\SshDirectoryCheckTrait;
@@ -12,8 +13,9 @@ use Symfony\Component\Console\Question\Question;
 
 class Aegir extends TypeBase {
 
-  use SshDirectoryCheckTrait, RsyncDirectory {
+  use SshDirectoryCheckTrait, RsyncDirectory, DumpRemoteDatabaseViaSsh {
     SshDirectoryCheckTrait::startProcess insteadof RsyncDirectory;
+    SshDirectoryCheckTrait::startProcess insteadof DumpRemoteDatabaseViaSsh;
   }
   use PrepareLocalDirectory;
 
@@ -23,8 +25,6 @@ class Aegir extends TypeBase {
     $questions['remote_directory'] = new Question("Platform directory:");
     $questions['composer_managed'] = new ChoiceQuestion("Is the platform managed by composer?", ["yes", "no"], "yes");
     $questions['remote_site_directory'] = new Question("Sites directory name:");
-    $questions['local_directory_name'] = new Question("Local subdirectory in which to store the downloaded site? (Will be created if it does not exist)");
-    $questions['local_mysql'] = new Question("Local mysql executable:");
     return $questions;
   }
 
@@ -44,6 +44,17 @@ class Aegir extends TypeBase {
     }
     $destination .="/sites/default";
     $this->rsyncDirectory($output, $source, $destination);
+    $this->getDump($output);
+//    $this->dump($output, )
+    // Get environment up and running.
+    $environment = $this->getEnvironmentObject($input, $output);
+    $environment->init($input, $output);
+    $environment->start($input, $output);
+    $environment->importDb($input, $output);
+  }
+
+  public function getProjectType(): string {
+    return 'drupal8';
   }
 
   public function getLocalSettingsFileLocation(): string {
@@ -62,6 +73,41 @@ class Aegir extends TypeBase {
       $exclusions[] = "sites";
     }
     return $exclusions;
+  }
+
+  protected function getDump(OutputInterface $output) {
+    $settings = $this->getLocalSettingsFileLocation();
+    $parts = explode(DIRECTORY_SEPARATOR, $settings);
+    array_pop($parts);
+    $drush_rc_parts = $parts;
+    $drush_rc_parts[] = "drushrc.php";
+    $drushrc_location = implode(DIRECTORY_SEPARATOR, $drush_rc_parts);
+    if (!$this->fs->exists($drushrc_location)) {
+      $output->writeln("<warning>Missing drushrc.php at $drushrc_location.</warning>");
+      throw new \RuntimeException("Missing drushrc.php");
+    }
+    include $drushrc_location;
+    $this->dump($output, $this->configuration['ssh_login'], $options['db_name'], $options['db_user'], $options['db_passwd'], $options['db_host']);
+    // Prep for import.
+    $settings_backup_parts = $parts;
+    $settings_backup_parts[] = 'aegir-settings.php';
+    $this->getFileSystem()->copy($settings, implode(DIRECTORY_SEPARATOR, $settings_backup_parts));
+    $this->getFileSystem()->remove($settings);
+    $default_source = "{$this->configuration['ssh_login']}:{$this->configuration['remote_directory']}";
+    $destination = $this->configuration['local_directory_name'];
+    if ($this->configuration['composer_managed'] === "yes") {
+      $default_source .= "/web";
+      $destination .= "/web";
+    }
+    $destination .= "/sites/default";
+    $default_source .= "/sites/default/";
+    $default_settings_source = $default_source;
+    $default_settings_source .= "default.settings.php";
+    $this->startProcess($output, "rsync -ac $default_settings_source $destination");
+    $default_services_source = $default_source;
+    $default_services_source .= "default.services.yml";
+    $this->startProcess($output, "rsync -ac $default_services_source $destination");
+    $this->getFileSystem()->copy("$destination/default.settings.php", $settings);
   }
 
 

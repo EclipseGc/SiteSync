@@ -23,6 +23,10 @@ class Drupal extends TypeBase {
     // TODO: Implement pull() method.
   }
 
+  public function getProjectType(): string {
+    return 'drupal8';
+  }
+
   public function getLocalSettingsFileLocation(): string {
     // TODO: Implement getLocalSettingsFileLocation() method.
   }

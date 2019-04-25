@@ -4,11 +4,18 @@ services:
     public: true
   sitesync.type.aegir:
     class: \EclipseGc\SiteSync\EventSubscriber\Type\Aegir
+    arguments: ['@event_dispatcher']
     public: true
     tags:
       - { name: kernel.event_subscriber }
   sitesync.type.drupal:
     class: \EclipseGc\SiteSync\EventSubscriber\Type\DrupalSsh
+    arguments: ['@event_dispatcher']
     public: true
+    tags:
+      - { name: kernel.event_subscriber }
+  sitesync.environment.ddev:
+    class: \EclipseGc\SiteSync\EventSubscriber\Environment\Ddev
+    public: true;
     tags:
       - { name: kernel.event_subscriber }

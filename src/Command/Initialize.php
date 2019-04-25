@@ -4,6 +4,8 @@
 namespace EclipseGc\SiteSync\Command;
 
 
+use EclipseGc\SiteSync\Event\GetEnvironmentObjectEvent;
+use EclipseGc\SiteSync\Event\GetEnvironmentsEvent;
 use EclipseGc\SiteSync\Event\GetTypeClassEvent;
 use EclipseGc\SiteSync\Event\GetTypesEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
@@ -11,6 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
@@ -58,12 +61,24 @@ class Initialize extends Command {
     $eventTypes = new GetTypesEvent();
     $this->dispatcher->dispatch($eventTypes, SiteSyncEvents::GET_TYPES);
     $type = new ChoiceQuestion("Site Type:", $eventTypes->getTypes());
+    $local_directory_name = new Question("Local subdirectory in which to store the downloaded site? (Will be created if it does not exist)");
 
     $configuration['type'] = $helper->ask($input, $output, $type);
     $typeObjectEvent = new GetTypeClassEvent($configuration);
     $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_TYPE_CLASS);
     $typeObject = $typeObjectEvent->getTypeObject();
     foreach ($typeObject->getQuestions() as $key => $question) {
+      $configuration[$key] = $helper->ask($input, $output, $question);
+    }
+    $configuration['local_directory_name'] = $helper->ask($input, $output, $local_directory_name);
+    $environmentTypes = new GetEnvironmentsEvent($configuration, $output);
+    $this->dispatcher->dispatch($environmentTypes, SiteSyncEvents::GET_ENVIRONMENTS);
+    $environment = new ChoiceQuestion("Environment Type:", $environmentTypes->getAvailableEnvironments());
+    $configuration['environment'] = $helper->ask($input, $output, $environment);
+    $environmentObjectEvent = new GetEnvironmentObjectEvent($configuration, $typeObject);
+    $this->dispatcher->dispatch($environmentObjectEvent, SiteSyncEvents::GET_ENVIRONMENT_OBJECT);
+    $environment = $environmentObjectEvent->getEnvironmentObject();
+    foreach ($environment->getQuestions() as $key => $question) {
       $configuration[$key] = $helper->ask($input, $output, $question);
     }
     $this->fs->dumpFile('.siteSync.yml', Yaml::dump($configuration));

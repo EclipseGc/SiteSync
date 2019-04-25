@@ -12,7 +12,7 @@ trait PrepareLocalDirectory {
   protected function prepLocalDirectory(OutputInterface $output, TypeInterface $type, array $configuration) {
     if (!$this->getFileSystem()->exists($configuration['local_directory_name'])) {
       $this->getFileSystem()->mkdir($configuration['local_directory_name']);
-      $output->writeln("<success>The \"html\" directory was created.</success>");
+      $output->writeln("<success>The \"{$configuration['local_directory_name']}\" directory was created.</success>");
     }
     else {
       $settings_location = $type->getLocalSettingsFileLocation();
