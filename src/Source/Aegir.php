@@ -1,6 +1,6 @@
 <?php
 
-namespace EclipseGc\SiteSync\Type;
+namespace EclipseGc\SiteSync\Source;
 
 use EclipseGc\SiteSync\Action\DumpRemoteDatabaseViaSsh;
 use EclipseGc\SiteSync\Action\PrepareLocalDirectory;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class Aegir extends TypeBase {
+class Aegir extends SourceBase {
 
   use SshDirectoryCheckTrait, RsyncDirectory, DumpRemoteDatabaseViaSsh {
     SshDirectoryCheckTrait::startProcess insteadof RsyncDirectory;
@@ -109,6 +109,5 @@ class Aegir extends TypeBase {
     $this->startProcess($output, "rsync -ac $default_services_source $destination");
     $this->getFileSystem()->copy("$destination/default.settings.php", $settings);
   }
-
 
 }

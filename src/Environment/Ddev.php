@@ -3,7 +3,7 @@
 namespace EclipseGc\SiteSync\Environment;
 
 use EclipseGc\SiteSync\Action\RunProcess;
-use EclipseGc\SiteSync\Type\TypeInterface;
+use EclipseGc\SiteSync\Source\SourceInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
@@ -23,7 +23,7 @@ class Ddev implements EnvironmentInterface {
   /**
    * The project type.
    *
-   * @var \EclipseGc\SiteSync\Type\TypeInterface
+   * @var \EclipseGc\SiteSync\Source\SourceInterface
    */
   protected $type;
 
@@ -34,7 +34,7 @@ class Ddev implements EnvironmentInterface {
    */
   protected $fs;
 
-  public function __construct(array $configuration, TypeInterface $type) {
+  public function __construct(array $configuration, SourceInterface $type) {
     $this->configuration = $configuration;
     $this->type = $type;
     $this->fs = new Filesystem();

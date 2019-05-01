@@ -1,11 +1,11 @@
 <?php
 
-namespace EclipseGc\SiteSync\Type;
+namespace EclipseGc\SiteSync\Source;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-interface TypeInterface {
+interface SourceInterface {
 
   /**
    * @return \Symfony\Component\Console\Question\Question[]

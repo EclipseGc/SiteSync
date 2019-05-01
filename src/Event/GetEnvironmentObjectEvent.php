@@ -5,7 +5,7 @@ namespace EclipseGc\SiteSync\Event;
 
 
 use EclipseGc\SiteSync\Environment\EnvironmentInterface;
-use EclipseGc\SiteSync\Type\TypeInterface;
+use EclipseGc\SiteSync\Source\SourceInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 class GetEnvironmentObjectEvent extends Event {
@@ -27,11 +27,11 @@ class GetEnvironmentObjectEvent extends Event {
   /**
    * The project type.
    *
-   * @var \EclipseGc\SiteSync\Type\TypeInterface
+   * @var \EclipseGc\SiteSync\Source\SourceInterface
    */
   protected $type;
 
-  public function __construct(array $configuration, TypeInterface $type) {
+  public function __construct(array $configuration, SourceInterface $type) {
     $this->configuration = $configuration;
     $this->type = $type;
   }

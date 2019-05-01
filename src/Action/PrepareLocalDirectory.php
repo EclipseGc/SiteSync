@@ -2,14 +2,14 @@
 
 namespace EclipseGc\SiteSync\Action;
 
-use EclipseGc\SiteSync\Type\TypeInterface;
+use EclipseGc\SiteSync\Source\SourceInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 trait PrepareLocalDirectory {
 
   use GetFileSystem;
 
-  protected function prepLocalDirectory(OutputInterface $output, TypeInterface $type, array $configuration) {
+  protected function prepLocalDirectory(OutputInterface $output, SourceInterface $type, array $configuration) {
     if (!$this->getFileSystem()->exists($configuration['local_directory_name'])) {
       $this->getFileSystem()->mkdir($configuration['local_directory_name']);
       $output->writeln("<success>The \"{$configuration['local_directory_name']}\" directory was created.</success>");

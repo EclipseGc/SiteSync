@@ -1,8 +1,6 @@
 <?php
 
-
 namespace EclipseGc\SiteSync\Action;
-
 
 use Symfony\Component\Console\Output\OutputInterface;
 

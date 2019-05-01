@@ -4,7 +4,7 @@ namespace EclipseGc\SiteSync\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class GetTypesEvent extends Event {
+class GetSourcesEvent extends Event {
 
   /**
    * The array of available types.

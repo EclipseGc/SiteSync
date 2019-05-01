@@ -1,21 +1,21 @@
 services:
   event_dispatcher:
-    class: \Symfony\Component\EventDispatcher\EventDispatcher
+    class: Symfony\Component\EventDispatcher\EventDispatcher
     public: true
   sitesync.type.aegir:
-    class: \EclipseGc\SiteSync\EventSubscriber\Type\Aegir
+    class: EclipseGc\SiteSync\EventSubscriber\Source\Aegir
     arguments: ['@event_dispatcher']
     public: true
     tags:
       - { name: kernel.event_subscriber }
   sitesync.type.drupal:
-    class: \EclipseGc\SiteSync\EventSubscriber\Type\DrupalSsh
+    class: EclipseGc\SiteSync\EventSubscriber\Source\DrupalSsh
     arguments: ['@event_dispatcher']
     public: true
     tags:
       - { name: kernel.event_subscriber }
   sitesync.environment.ddev:
-    class: \EclipseGc\SiteSync\EventSubscriber\Environment\Ddev
+    class: EclipseGc\SiteSync\EventSubscriber\Environment\Ddev
     public: true;
     tags:
       - { name: kernel.event_subscriber }

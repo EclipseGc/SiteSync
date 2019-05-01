@@ -2,7 +2,7 @@
 
 namespace EclipseGc\SiteSync\Command;
 
-use EclipseGc\SiteSync\Event\GetTypeClassEvent;
+use EclipseGc\SiteSync\Event\GetSourceClassEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -70,9 +70,9 @@ class Pull extends Command {
       return;
     }
     $configuration = Yaml::parseFile('.siteSync.yml');
-    $typeObjectEvent = new GetTypeClassEvent($configuration);
-    $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_TYPE_CLASS);
-    $type = $typeObjectEvent->getTypeObject();
+    $typeObjectEvent = new GetSourceClassEvent($configuration);
+    $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_SOURCE_CLASS);
+    $type = $typeObjectEvent->getSourceObject();
     $type->pull($this->input, $this->output);
   }
 

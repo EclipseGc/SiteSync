@@ -1,17 +1,15 @@
 <?php
 
-namespace EclipseGc\SiteSync\EventSubscriber\Type;
+namespace EclipseGc\SiteSync\EventSubscriber\Source;
 
-use EclipseGc\SiteSync\Event\GetTypeClassEvent;
-use EclipseGc\SiteSync\Event\GetTypesEvent;
+use EclipseGc\SiteSync\Event\GetSourceClassEvent;
+use EclipseGc\SiteSync\Event\GetSourcesEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
-use EclipseGc\SiteSync\Type\Drupal;
+use EclipseGc\SiteSync\Source\Aegir as AegirType;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DrupalSsh implements EventSubscriberInterface {
-
-  const LABEL = "Drupal across ssh";
+class Aegir implements EventSubscriberInterface {
 
   /**
    * The event dispatcher.
@@ -31,18 +29,18 @@ class DrupalSsh implements EventSubscriberInterface {
   }
 
   public static function getSubscribedEvents() {
-    $events[SiteSyncEvents::GET_TYPES] = 'onGetTypes';
-    $events[SiteSyncEvents::GET_TYPE_CLASS] = 'onGetTypeClass';
+    $events[SiteSyncEvents::GET_SOURCES] = 'onGetSources';
+    $events[SiteSyncEvents::GET_SOURCE_CLASS] = 'onGetSourceClass';
     return $events;
   }
 
-  public function onGetTypes(GetTypesEvent $event) {
-    $event->addType($this::LABEL);
+  public function onGetSources(GetSourcesEvent $event) {
+    $event->addType("Aegir");
   }
 
-  public function onGetTypeClass(GetTypeClassEvent $event) {
-    if ($event->getConfiguration()['type'] === $this::LABEL) {
-      $event->setTypeObject(new Drupal($event->getConfiguration(), $this->dispatcher));
+  public function onGetSourceClass(GetSourceClassEvent $event) {
+    if ($event->getConfiguration()['type'] === "Aegir") {
+      $event->setSourceObject(new AegirType($event->getConfiguration(), $this->dispatcher));
       $event->stopPropagation();
     }
   }

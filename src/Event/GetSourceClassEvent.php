@@ -2,10 +2,10 @@
 
 namespace EclipseGc\SiteSync\Event;
 
-use EclipseGc\SiteSync\Type\TypeInterface;
+use EclipseGc\SiteSync\Source\SourceInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-class GetTypeClassEvent extends Event {
+class GetSourceClassEvent extends Event {
 
   /**
    * The siteSync configuration.
@@ -15,7 +15,7 @@ class GetTypeClassEvent extends Event {
   protected $configuration;
 
   /**
-   * @var \EclipseGc\SiteSync\Type\TypeInterface
+   * @var \EclipseGc\SiteSync\Source\SourceInterface
    */
   protected $typeObject;
 
@@ -27,11 +27,11 @@ class GetTypeClassEvent extends Event {
     return $this->configuration;
   }
 
-  public function setTypeObject(TypeInterface $typeObject) {
+  public function setSourceObject(SourceInterface $typeObject) {
     $this->typeObject = $typeObject;
   }
 
-  public function getTypeObject() : TypeInterface {
+  public function getSourceObject() : SourceInterface {
     if (!$this->typeObject) {
       throw new \LogicException("You must set the type object before trying to get it.");
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace EclipseGc\SiteSync\Type;
+namespace EclipseGc\SiteSync\Source;
 
 use EclipseGc\SiteSync\Action\SshDirectoryCheckTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class Drupal extends TypeBase {
+class Drupal extends SourceBase {
 
   use SshDirectoryCheckTrait;
 

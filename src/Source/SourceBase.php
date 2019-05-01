@@ -1,12 +1,12 @@
 <?php
 
-namespace EclipseGc\SiteSync\Type;
+namespace EclipseGc\SiteSync\Source;
 
 use EclipseGc\SiteSync\Event\GetEnvironmentObjectEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-abstract class TypeBase implements TypeInterface {
+abstract class SourceBase implements SourceInterface {
 
   /**
    * The siteSync configuration.

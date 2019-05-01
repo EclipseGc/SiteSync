@@ -6,8 +6,8 @@ namespace EclipseGc\SiteSync\Command;
 
 use EclipseGc\SiteSync\Event\GetEnvironmentObjectEvent;
 use EclipseGc\SiteSync\Event\GetEnvironmentsEvent;
-use EclipseGc\SiteSync\Event\GetTypeClassEvent;
-use EclipseGc\SiteSync\Event\GetTypesEvent;
+use EclipseGc\SiteSync\Event\GetSourceClassEvent;
+use EclipseGc\SiteSync\Event\GetSourcesEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -58,15 +58,15 @@ class Initialize extends Command {
     }
     $configuration = [];
     $helper = $this->getHelper('question');
-    $eventTypes = new GetTypesEvent();
-    $this->dispatcher->dispatch($eventTypes, SiteSyncEvents::GET_TYPES);
+    $eventTypes = new GetSourcesEvent();
+    $this->dispatcher->dispatch($eventTypes, SiteSyncEvents::GET_SOURCES);
     $type = new ChoiceQuestion("Site Type:", $eventTypes->getTypes());
     $local_directory_name = new Question("Local subdirectory in which to store the downloaded site? (Will be created if it does not exist)");
 
     $configuration['type'] = $helper->ask($input, $output, $type);
-    $typeObjectEvent = new GetTypeClassEvent($configuration);
-    $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_TYPE_CLASS);
-    $typeObject = $typeObjectEvent->getTypeObject();
+    $typeObjectEvent = new GetSourceClassEvent($configuration);
+    $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_SOURCE_CLASS);
+    $typeObject = $typeObjectEvent->getSourceObject();
     foreach ($typeObject->getQuestions() as $key => $question) {
       $configuration[$key] = $helper->ask($input, $output, $question);
     }
