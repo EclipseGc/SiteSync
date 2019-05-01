@@ -4,7 +4,7 @@ namespace EclipseGc\SiteSync\Command;
 
 use EclipseGc\SiteSync\Action\DumpRemoteDatabaseViaSsh;
 use EclipseGc\SiteSync\Event\GetEnvironmentObjectEvent;
-use EclipseGc\SiteSync\Event\GetSourceClassEvent;
+use EclipseGc\SiteSync\Event\GetSourceObjectEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
 use EclipseGc\SiteSync\Source\SourceInterface;
 use Symfony\Component\Console\Command\Command;
@@ -57,7 +57,7 @@ class PullDb extends Command {
   }
 
   protected function getTypeObject() {
-    $typeObjectEvent = new GetSourceClassEvent($this->configuration);
+    $typeObjectEvent = new GetSourceObjectEvent($this->configuration);
     $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_SOURCE_CLASS);
     return $typeObjectEvent->getSourceObject();
   }

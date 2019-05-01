@@ -2,7 +2,8 @@
 
 namespace EclipseGc\SiteSync\Command;
 
-use EclipseGc\SiteSync\Event\GetSourceClassEvent;
+use EclipseGc\SiteSync\Dispatcher;
+use EclipseGc\SiteSync\Event\GetSourceObjectEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -15,7 +16,7 @@ use Symfony\Component\Yaml\Yaml;
 class Pull extends Command {
 
   /**
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   * @var \EclipseGc\SiteSync\Dispatcher
    */
   protected $dispatcher;
 
@@ -26,22 +27,8 @@ class Pull extends Command {
    */
   protected $fs;
 
-  /**
-   * The input.
-   *
-   * @var \Symfony\Component\Console\Input\InputInterface
-   */
-  protected $input;
 
-  /**
-   * The output.
-   *
-   * @var \Symfony\Component\Console\Output\OutputInterface
-   */
-  protected $output;
-
-
-  public function __construct($name = NULL, EventDispatcherInterface $dispatcher) {
+  public function __construct($name = NULL, Dispatcher $dispatcher) {
     $this->dispatcher = $dispatcher;
     parent::__construct($name);
   }
@@ -58,22 +45,18 @@ class Pull extends Command {
    * {@inheritdoc}
    */
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $this->input = $input;
-    $this->output = $output;
     $successStyle = new OutputFormatterStyle('black', 'green');
-    $this->output->getFormatter()->setStyle('success', $successStyle);
+    $output->getFormatter()->setStyle('success', $successStyle);
     $warningStyle = new OutputFormatterStyle('black', 'yellow');
-    $this->output->getFormatter()->setStyle('warning', $warningStyle);
+    $output->getFormatter()->setStyle('warning', $warningStyle);
+
     $this->fs = new Filesystem();
     if (!$this->fs->exists('.siteSync.yml')) {
       $output->writeln("The site has not yet been initialized. Run the init command");
       return;
     }
-    $configuration = Yaml::parseFile('.siteSync.yml');
-    $typeObjectEvent = new GetSourceClassEvent($configuration);
-    $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_SOURCE_CLASS);
-    $type = $typeObjectEvent->getSourceObject();
-    $type->pull($this->input, $this->output);
+    $source = $this->dispatcher->getSourceObject();
+    $source->pull($input, $output);
   }
 
 }

@@ -28,7 +28,7 @@ class Ddev implements EventSubscriberInterface {
 
   public function onGetEnvironmentObject(GetEnvironmentObjectEvent $event) {
     $config = $event->getConfiguration();
-    if ($config['environment'] === DdevEnvironment::ID) {
+    if ($config->get('environment') === DdevEnvironment::ID) {
       $event->setEnvironmentObject(new DdevEnvironment($config, $event->getType()));
       $event->stopPropagation();
     }

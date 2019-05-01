@@ -3,6 +3,7 @@
 namespace EclipseGc\SiteSync\Environment;
 
 use EclipseGc\SiteSync\Action\RunProcess;
+use EclipseGc\SiteSync\Configuration;
 use EclipseGc\SiteSync\Source\SourceInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,7 +17,7 @@ class Ddev implements EnvironmentInterface {
   public const ID = "DDEV";
 
   /**
-   * @var array
+   * @var \EclipseGc\SiteSync\Configuration
    */
   protected $configuration;
 
@@ -34,7 +35,7 @@ class Ddev implements EnvironmentInterface {
    */
   protected $fs;
 
-  public function __construct(array $configuration, SourceInterface $type) {
+  public function __construct(Configuration $configuration, SourceInterface $type) {
     $this->configuration = $configuration;
     $this->type = $type;
     $this->fs = new Filesystem();
@@ -62,11 +63,11 @@ class Ddev implements EnvironmentInterface {
       $output->writeln("<warning>.ddev directory already exists, skipping ddev initialization.</warning>");
       return;
     }
-    $docroot = $this->configuration['local_directory_name'];
-    if ($this->configuration['composer_managed'] === 'yes') {
+    $docroot = $this->configuration->get('local_directory_name');
+    if ($this->configuration->get('composer_managed') === 'yes') {
       $docroot .= DIRECTORY_SEPARATOR . "web";
     }
-    $this->startProcess($output, "ddev config --docroot=$docroot --project-name={$this->configuration['ddev_project_name']} --project-type={$this->type->getProjectType()} --http-port={$this->configuration['ddev_http_port']} --https-port={$this->configuration['ddev_https_port']}");
+    $this->startProcess($output, "ddev config --docroot=$docroot --project-name={$this->configuration->get('ddev_project_name')} --project-type={$this->type->getProjectType()} --http-port={$this->configuration->get('ddev_http_port')} --https-port={$this->configuration->get('ddev_https_port')}");
   }
 
   public function start(InputInterface $input, OutputInterface $output) {

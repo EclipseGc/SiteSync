@@ -2,9 +2,17 @@ services:
   event_dispatcher:
     class: Symfony\Component\EventDispatcher\EventDispatcher
     public: true
+  configuration:
+    class: EclipseGc\SiteSync\Configuration
+    factory: ['\EclipseGc\SiteSync\Configuration', getFromFile]
+    public: true
+  sitesync.dispatcher:
+    class: EclipseGc\SiteSync\Dispatcher
+    arguments: ['@event_dispatcher', '@configuration']
+    public: true
   sitesync.type.aegir:
     class: EclipseGc\SiteSync\EventSubscriber\Source\Aegir
-    arguments: ['@event_dispatcher']
+    arguments: ['@sitesync.dispatcher']
     public: true
     tags:
       - { name: kernel.event_subscriber }
@@ -19,3 +27,15 @@ services:
     public: true;
     tags:
       - { name: kernel.event_subscriber }
+  sitesync.command.init:
+    class: EclipseGc\SiteSync\Command\Initialize
+    arguments: [null, '@sitesync.dispatcher']
+    public: true
+  sitesync.command.pull:
+    class: EclipseGc\SiteSync\Command\Pull
+    arguments: [null, '@sitesync.dispatcher']
+    public: true
+  sitesync.command.pulldb:
+    class: EclipseGc\SiteSync\Command\PullDb
+    arguments: [null, '@event_dispatcher']
+    public: true

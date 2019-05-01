@@ -7,18 +7,18 @@ use Symfony\Component\EventDispatcher\Event;
 class GetSourcesEvent extends Event {
 
   /**
-   * The array of available types.
+   * The array of available sources.
    *
    * @var string[]
    */
-  protected $types = [];
+  protected $sources = [];
 
-  public function addType(string $typeName) {
-    $this->types[] = $typeName;
+  public function addSource(string $sourceName) {
+    $this->sources[] = $sourceName;
   }
 
-  public function getTypes() {
-    return $this->types;
+  public function getSources() {
+    return $this->sources;
   }
 
 }

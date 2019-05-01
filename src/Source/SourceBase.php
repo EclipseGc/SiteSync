@@ -2,35 +2,25 @@
 
 namespace EclipseGc\SiteSync\Source;
 
-use EclipseGc\SiteSync\Event\GetEnvironmentObjectEvent;
-use EclipseGc\SiteSync\SiteSyncEvents;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use EclipseGc\SiteSync\Dispatcher;
 
 abstract class SourceBase implements SourceInterface {
 
   /**
-   * The siteSync configuration.
+   * The siteSync dispatcher.
    *
-   * @var array
-   */
-  protected $configuration;
-
-  /**
-   * The event dispatcher.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   * @var \EclipseGc\SiteSync\Dispatcher
    */
   protected $dispatcher;
 
-  public function __construct(array $configuration, EventDispatcherInterface $dispatcher) {
-    $this->configuration = $configuration;
-    $this->dispatcher = $dispatcher;
-  }
+  /**
+   * @var \EclipseGc\SiteSync\Configuration
+   */
+  protected $configuration;
 
-  protected function getEnvironmentObject() {
-    $environmentObjectEvent = new GetEnvironmentObjectEvent($this->configuration, $this);
-    $this->dispatcher->dispatch($environmentObjectEvent, SiteSyncEvents::GET_ENVIRONMENT_OBJECT);
-    return $environmentObjectEvent->getEnvironmentObject();
+  public function __construct(Dispatcher $dispatcher) {
+    $this->dispatcher = $dispatcher;
+    $this->configuration = $dispatcher->getConfiguration();
   }
 
 }

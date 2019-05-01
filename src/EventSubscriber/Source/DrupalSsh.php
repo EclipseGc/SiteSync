@@ -2,7 +2,7 @@
 
 namespace EclipseGc\SiteSync\EventSubscriber\Source;
 
-use EclipseGc\SiteSync\Event\GetSourceClassEvent;
+use EclipseGc\SiteSync\Event\GetSourceObjectEvent;
 use EclipseGc\SiteSync\Event\GetSourcesEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
 use EclipseGc\SiteSync\Source\Drupal;
@@ -37,10 +37,10 @@ class DrupalSsh implements EventSubscriberInterface {
   }
 
   public function onGetSources(GetSourcesEvent $event) {
-    $event->addType($this::LABEL);
+    $event->addSource($this::LABEL);
   }
 
-  public function onGetSourcesClass(GetSourceClassEvent $event) {
+  public function onGetSourcesClass(GetSourceObjectEvent $event) {
     if ($event->getConfiguration()['type'] === $this::LABEL) {
       $event->setSourceObject(new Drupal($event->getConfiguration(), $this->dispatcher));
       $event->stopPropagation();
