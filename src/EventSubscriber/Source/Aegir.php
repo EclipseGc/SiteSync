@@ -2,48 +2,24 @@
 
 namespace EclipseGc\SiteSync\EventSubscriber\Source;
 
-use EclipseGc\SiteSync\Dispatcher;
-use EclipseGc\SiteSync\Event\GetSourceObjectEvent;
-use EclipseGc\SiteSync\Event\GetSourcesEvent;
-use EclipseGc\SiteSync\SiteSyncEvents;
 use EclipseGc\SiteSync\Source\Aegir as AegirType;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class Aegir implements EventSubscriberInterface {
+class Aegir extends SourceSubscriberBase {
 
-  /**
-   * The event dispatcher.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   */
-  protected $dispatcher;
-
-  /**
-   * Aegir constructor.
-   *
-   * @param \EclipseGc\SiteSync\Dispatcher $dispatcher
-   *   The siteSync dispatcher.
-   */
-  public function __construct(Dispatcher $dispatcher) {
-    $this->dispatcher = $dispatcher;
+  public function getType() : string {
+    return AegirType::ID;
   }
 
-  public static function getSubscribedEvents() {
-    $events[SiteSyncEvents::GET_SOURCES] = 'onGetSources';
-    $events[SiteSyncEvents::GET_SOURCE_CLASS] = 'onGetSourceClass';
-    return $events;
+  public function getLabel() : string {
+    return AegirType::LABEL;
   }
 
-  public function onGetSources(GetSourcesEvent $event) {
-    $event->addSource("Aegir");
+  public function getServiceId() : string {
+    return AegirType::SERVICE_ID;
   }
 
-  public function onGetSourceClass(GetSourceObjectEvent $event) {
-    if ($event->getConfiguration()->get('type') === "Aegir") {
-      $event->setSourceObject(new AegirType($this->dispatcher));
-      $event->stopPropagation();
-    }
+  public function getCompatibility(string $type = NULL) : array {
+    return AegirType::getCompatibility();
   }
 
 }

@@ -41,20 +41,25 @@ class Initialize extends Command {
       return;
     }
     $helper = $this->getHelper('question');
-    $type = new ChoiceQuestion("Site Type:", $this->dispatcher->getSources());
-    $local_directory_name = new Question("Local subdirectory in which to store the downloaded site? (Will be created if it does not exist)");
-
+    $type = new ChoiceQuestion("Site Type:", $this->dispatcher->getTypes());
     $configuration->set('type', $helper->ask($input, $output, $type));
+
+    $source = new ChoiceQuestion("Site Source:", $this->dispatcher->getSources($configuration));
+    $configuration->set('source', $helper->ask($input, $output, $source));
+
+    $local_directory_name = new Question("Local subdirectory in which to store the downloaded site? (Will be created if it does not exist): ");
+
+    $typeObject = $this->dispatcher->getTypeObject($configuration);
     $sourceObject = $this->dispatcher->getSourceObject($configuration);
     foreach ($sourceObject->getQuestions() as $key => $question) {
-      $configuration->set($key, $helper->ask($input, $output, $question));
+      $configuration->set("{$configuration->get('source')}.$key", $helper->ask($input, $output, $question));
     }
     $configuration->set('local_directory_name', $helper->ask($input, $output, $local_directory_name));
     $environment = new ChoiceQuestion("Environment Type:", $this->dispatcher->getEnvironments($output, $configuration));
     $configuration->set('environment', $helper->ask($input, $output, $environment));
-    $environment = $this->dispatcher->getEnvironmentObject($sourceObject, $configuration);
+    $environment = $this->dispatcher->getEnvironmentObject($typeObject, $sourceObject, $configuration);
     foreach ($environment->getQuestions() as $key => $question) {
-      $configuration->set($key, $helper->ask($input, $output, $question));
+      $configuration->set("{$configuration->get('environment')}.$key", $helper->ask($input, $output, $question));
     }
     $configuration->save();
   }

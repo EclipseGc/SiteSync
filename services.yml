@@ -10,19 +10,37 @@ services:
     class: EclipseGc\SiteSync\Dispatcher
     arguments: ['@event_dispatcher', '@configuration']
     public: true
-  sitesync.type.aegir:
-    class: EclipseGc\SiteSync\EventSubscriber\Source\Aegir
+  sitesync.subscriber.type.drupal8:
+    class: EclipseGc\SiteSync\EventSubscriber\Type\Drupal8
+    arguments: ['@service_container']
+    public: true
+    tags:
+        - { name: kernel.event_subscriber }
+  sitesync.type.drupal8:
+    class: EclipseGc\SiteSync\Type\Drupal8
     arguments: ['@sitesync.dispatcher']
     public: true
-    tags:
-      - { name: kernel.event_subscriber }
-  sitesync.type.drupal:
-    class: EclipseGc\SiteSync\EventSubscriber\Source\DrupalSsh
-    arguments: ['@event_dispatcher']
+  sitesync.subscriber.source.aegir:
+    class: EclipseGc\SiteSync\EventSubscriber\Source\Aegir
+    arguments: ['@service_container']
     public: true
     tags:
       - { name: kernel.event_subscriber }
-  sitesync.environment.ddev:
+  sitesync.source.aegir:
+    class: EclipseGc\SiteSync\Source\Aegir
+    arguments: ['@sitesync.dispatcher']
+    public: true
+  sitesync.subscriber.source.drupal:
+    class: EclipseGc\SiteSync\EventSubscriber\Source\DrupalSsh
+    arguments: ['@service_container']
+    public: true
+    tags:
+      - { name: kernel.event_subscriber }
+  sitesync.source.drupalssh:
+    class: EclipseGc\SiteSync\Source\Drupal
+    arguments: ['@sitesync.dispatcher']
+    public: true
+  sitesync.subscriber.environment.ddev:
     class: EclipseGc\SiteSync\EventSubscriber\Environment\Ddev
     public: true;
     tags:

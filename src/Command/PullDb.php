@@ -58,7 +58,7 @@ class PullDb extends Command {
 
   protected function getTypeObject() {
     $typeObjectEvent = new GetSourceObjectEvent($this->configuration);
-    $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_SOURCE_CLASS);
+    $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_SOURCE_OBJECT);
     return $typeObjectEvent->getSourceObject();
   }
 

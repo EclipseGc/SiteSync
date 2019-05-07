@@ -50,8 +50,8 @@ class GetEnvironmentsEvent extends Event {
     return $this->output;
   }
 
-  public function addAvailableEnvironment($environment) {
-    $this->environments[] = $environment;
+  public function addAvailableEnvironment(string $id, string $environment) {
+    $this->environments[$id] = $environment;
   }
 
   public function getAvailableEnvironments() : array {

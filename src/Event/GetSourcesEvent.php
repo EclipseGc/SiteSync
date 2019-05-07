@@ -2,6 +2,7 @@
 
 namespace EclipseGc\SiteSync\Event;
 
+use EclipseGc\SiteSync\Configuration;
 use Symfony\Component\EventDispatcher\Event;
 
 class GetSourcesEvent extends Event {
@@ -13,8 +14,21 @@ class GetSourcesEvent extends Event {
    */
   protected $sources = [];
 
-  public function addSource(string $sourceName) {
-    $this->sources[] = $sourceName;
+  /**
+   * @var \EclipseGc\SiteSync\Configuration
+   */
+  protected $configuration;
+
+  public function __construct(Configuration $configuration) {
+    $this->configuration = $configuration;
+  }
+
+  public function getConfiguration() {
+    return $this->configuration;
+  }
+
+  public function addSource(string $id, string $label) {
+    $this->sources[$id] = $label;
   }
 
   public function getSources() {

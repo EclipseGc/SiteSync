@@ -22,14 +22,14 @@ class Ddev implements EventSubscriberInterface {
   public function onGetEnvironments(GetEnvironmentsEvent $event) {
     $process = $this->startProcess($event->getOutput(), "which ddev");
     if ($process->isSuccessful()) {
-      $event->addAvailableEnvironment(DdevEnvironment::ID);
+      $event->addAvailableEnvironment(DdevEnvironment::ID, DdevEnvironment::LABEL);
     }
   }
 
   public function onGetEnvironmentObject(GetEnvironmentObjectEvent $event) {
     $config = $event->getConfiguration();
     if ($config->get('environment') === DdevEnvironment::ID) {
-      $event->setEnvironmentObject(new DdevEnvironment($config, $event->getType()));
+      $event->setEnvironmentObject(new DdevEnvironment($config, $event->getType(), $event->getSource()));
       $event->stopPropagation();
     }
   }

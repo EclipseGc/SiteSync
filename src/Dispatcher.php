@@ -6,7 +6,10 @@ use EclipseGc\SiteSync\Event\GetEnvironmentObjectEvent;
 use EclipseGc\SiteSync\Event\GetEnvironmentsEvent;
 use EclipseGc\SiteSync\Event\GetSourceObjectEvent;
 use EclipseGc\SiteSync\Event\GetSourcesEvent;
+use EclipseGc\SiteSync\Event\GetTypeObjectEvent;
+use EclipseGc\SiteSync\Event\GetTypesEvent;
 use EclipseGc\SiteSync\Source\SourceInterface;
+use EclipseGc\SiteSync\Type\TypeInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -35,11 +38,26 @@ class Dispatcher {
     return $this->configuration;
   }
 
+  public function getTypes() {
+    $typesEvent = new GetTypesEvent();
+    $this->dispatcher->dispatch($typesEvent, SiteSyncEvents::GET_TYPES);
+    return $typesEvent->getTypes();
+  }
+
+  public function getTypeObject(Configuration $configuration = NULL) {
+    if (!$configuration) {
+      $configuration = $this->configuration;
+    }
+    $typeObjectEvent = new GetTypeObjectEvent($configuration);
+    $this->dispatcher->dispatch($typeObjectEvent, SiteSyncEvents::GET_TYPE_OBJECT);
+    return $typeObjectEvent->getType();
+  }
+
   public function getSources(Configuration $configuration = NULL) {
     if (!$configuration) {
       $configuration = $this->configuration;
     }
-    $sourcesEvent = new GetSourcesEvent();
+    $sourcesEvent = new GetSourcesEvent($configuration);
     $this->dispatcher->dispatch($sourcesEvent, SiteSyncEvents::GET_SOURCES);
     return $sourcesEvent->getSources();
   }
@@ -49,7 +67,7 @@ class Dispatcher {
       $configuration = $this->configuration;
     }
     $sourceObjectEvent = new GetSourceObjectEvent($configuration);
-    $this->dispatcher->dispatch($sourceObjectEvent, SiteSyncEvents::GET_SOURCE_CLASS);
+    $this->dispatcher->dispatch($sourceObjectEvent, SiteSyncEvents::GET_SOURCE_OBJECT);
     return $sourceObjectEvent->getSourceObject();
   }
 
@@ -62,14 +80,17 @@ class Dispatcher {
     return $environmentTypes->getAvailableEnvironments();
   }
 
-  public function getEnvironmentObject(SourceInterface $source = NULL, Configuration $configuration = NULL) {
+  public function getEnvironmentObject(TypeInterface $type = NULL, SourceInterface $source = NULL, Configuration $configuration = NULL) {
     if (!$configuration) {
       $configuration = $this->configuration;
+    }
+    if (!$type) {
+      $type = $this->getTypeObject($configuration);
     }
     if (!$source) {
       $source = $this->getSourceObject($configuration);
     }
-    $environmentObjectEvent = new GetEnvironmentObjectEvent($configuration, $source);
+    $environmentObjectEvent = new GetEnvironmentObjectEvent($configuration, $type, $source);
     $this->dispatcher->dispatch($environmentObjectEvent, SiteSyncEvents::GET_ENVIRONMENT_OBJECT);
     return $environmentObjectEvent->getEnvironmentObject();
   }

@@ -14,10 +14,12 @@ interface SourceInterface {
 
   public function pull(InputInterface $input, OutputInterface $output) : void ;
 
-  public function getProjectType() : string ;
+  public function getDocroot() : string ;
 
   public function getLocalSettingsFileLocation() : string ;
 
   public function getDump(OutputInterface $output);
+
+  public static function getCompatibility() : array ;
 
 }

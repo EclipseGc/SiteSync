@@ -14,7 +14,7 @@ class Configuration {
    *
    * @var array
    */
-  protected $values;
+  protected $values = [];
 
   /**
    * The file system object.
@@ -41,22 +41,43 @@ class Configuration {
     return $this->values;
   }
 
-  public function hasValues() {
+  public function hasValues() : bool {
     return (bool) $this->values;
   }
 
-  public function hasValue(string $key) {
-    return !empty($this->values[$key]);
-  }
-
-  public function get(string $key) {
-    if (isset($this->values[$key])) {
-      return $this->values[$key];
+  public function hasValue(string $key) : bool {
+    $reference = $this->values;
+    foreach (explode('.', $key) as $valueAsKey) {
+      if (!isset($reference[$valueAsKey])) {
+        return FALSE;
+      }
+      if (is_array($reference[$valueAsKey])) {
+        $reference = $reference[$valueAsKey];
+        continue;
+      }
+      return !empty($reference[$valueAsKey]);
     }
   }
 
-  public function set(string $key, $value) {
-    $this->values[$key] = $value;
+  public function get(string $key) : string {
+    $reference = $this->values;
+    foreach (explode('.', $key) as $valueAsKey) {
+      if (!isset($reference[$valueAsKey])) {
+        throw new \RuntimeException(sprintf("The key '%s' was not found in the configuration object.", $key));
+      }
+      if (is_array($reference[$valueAsKey])) {
+        $reference = $reference[$valueAsKey];
+        continue;
+      }
+      return $reference[$valueAsKey];
+    }
+  }
+
+  public function set(string $key, string $value) {
+    foreach (array_reverse(explode('.', $key)) as $valueAsKey) {
+      $value = [$valueAsKey => $value];
+    }
+    $this->values = array_merge_recursive($this->values, $value);
   }
 
   public function save() {

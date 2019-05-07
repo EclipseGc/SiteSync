@@ -9,6 +9,12 @@ use Symfony\Component\Console\Question\Question;
 
 class Drupal extends SourceBase {
 
+  const ID = 'drupal_ssh';
+
+  const LABEL = 'Drupal across SSH';
+
+  const SERVICE_ID = 'sitesync.source.drupal_ssh';
+
   use SshDirectoryCheckTrait;
 
   public function getQuestions() : array {
@@ -23,8 +29,8 @@ class Drupal extends SourceBase {
     // TODO: Implement pull() method.
   }
 
-  public function getProjectType(): string {
-    return 'drupal8';
+  public function getDocroot(): string {
+    // TODO: Implement getDocroot() method.
   }
 
   public function getLocalSettingsFileLocation(): string {
@@ -33,6 +39,10 @@ class Drupal extends SourceBase {
 
   public function getDump(OutputInterface $output) {
 
+  }
+
+  public static function getCompatibility(): array {
+    return [];
   }
 
 }
