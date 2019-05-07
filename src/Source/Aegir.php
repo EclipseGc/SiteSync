@@ -36,7 +36,13 @@ class Aegir extends SourceBase {
   }
 
   public function pull(InputInterface $input, OutputInterface $output) : void {
-    $this->checkRemoteDirectory($output, $this->configuration);
+    $directory = $this->configuration->get("aegir.remote_directory");
+    // @todo this whole directory bit is wrong.
+    if ($this->configuration->hasValue('aegir.composer_managed') && $this->configuration->get('aegir.composer_managed') === "yes") {
+      $directory .= "/web";
+    }
+    $directory .= "/sites/{$this->configuration->get("aegir.remote_site_directory")}";
+    $this->checkRemoteDirectory($output, $this->configuration->get('aegir.ssh_login'), $directory);
     $this->prepLocalDirectory($output, $this, $this->configuration);
     $source = "{$this->configuration->get('aegir.ssh_login')}:{$this->configuration->get('aegir.remote_directory')}";
     $destination = $this->configuration->get('local_directory_name');
