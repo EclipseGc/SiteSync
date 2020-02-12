@@ -5,7 +5,6 @@ namespace EclipseGc\SiteSync\EventSubscriber\Source;
 use EclipseGc\SiteSync\Event\GetSourceObjectEvent;
 use EclipseGc\SiteSync\Event\GetSourcesEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
-use EclipseGc\SiteSync\Source\Aegir as AegirType;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -28,8 +27,6 @@ abstract class SourceSubscriberBase implements EventSubscriberInterface {
 
   public function onGetSources(GetSourcesEvent $event) {
     $type = $event->getConfiguration()->get('type');
-//    print_r($type);
-//    print_r($this->getCompatibility($type));
     if (in_array($type, $this->getCompatibility($type))) {
       $event->addSource($this->getType(), $this->getLabel());
     }

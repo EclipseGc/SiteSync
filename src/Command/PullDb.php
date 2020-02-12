@@ -2,7 +2,7 @@
 
 namespace EclipseGc\SiteSync\Command;
 
-use EclipseGc\SiteSync\Action\DumpRemoteDatabaseViaSsh;
+use EclipseGc\SiteSync\Action\RemoteDatabaseCommandViaSsh;
 use EclipseGc\SiteSync\Event\GetEnvironmentObjectEvent;
 use EclipseGc\SiteSync\Event\GetSourceObjectEvent;
 use EclipseGc\SiteSync\SiteSyncEvents;
@@ -16,7 +16,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class PullDb extends Command {
 
-  use DumpRemoteDatabaseViaSsh;
+  use RemoteDatabaseCommandViaSsh;
 
   /**
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface

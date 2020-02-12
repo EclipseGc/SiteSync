@@ -2,7 +2,7 @@
 
 namespace EclipseGc\SiteSync\Source;
 
-use EclipseGc\SiteSync\Action\DumpRemoteDatabaseViaSsh;
+use EclipseGc\SiteSync\Action\RemoteDatabaseCommandViaSsh;
 use EclipseGc\SiteSync\Action\PrepareLocalDirectory;
 use EclipseGc\SiteSync\Action\RsyncDirectory;
 use EclipseGc\SiteSync\Action\SshDirectoryCheckTrait;
@@ -20,9 +20,9 @@ class Aegir extends SourceBase {
 
   const SERVICE_ID = 'sitesync.source.aegir';
 
-  use SshDirectoryCheckTrait, RsyncDirectory, DumpRemoteDatabaseViaSsh {
+  use SshDirectoryCheckTrait, RsyncDirectory, RemoteDatabaseCommandViaSsh {
     SshDirectoryCheckTrait::startProcess insteadof RsyncDirectory;
-    SshDirectoryCheckTrait::startProcess insteadof DumpRemoteDatabaseViaSsh;
+    SshDirectoryCheckTrait::startProcess insteadof RemoteDatabaseCommandViaSsh;
   }
   use PrepareLocalDirectory;
 
@@ -37,7 +37,6 @@ class Aegir extends SourceBase {
 
   public function pull(InputInterface $input, OutputInterface $output) : void {
     $directory = $this->configuration->get("aegir.remote_directory");
-    // @todo this whole directory bit is wrong.
     if ($this->configuration->hasValue('aegir.composer_managed') && $this->configuration->get('aegir.composer_managed') === "yes") {
       $directory .= "/web";
     }
@@ -58,7 +57,6 @@ class Aegir extends SourceBase {
     $destination .="/sites/default";
     $this->rsyncDirectory($output, $source, $destination);
     $this->getDump($output);
-//    $this->dump($output, )
     // Get environment up and running.
     $environment = $this->dispatcher->getEnvironmentObject();
     $environment->init($input, $output);
@@ -89,6 +87,10 @@ class Aegir extends SourceBase {
   }
 
   public function getDump(OutputInterface $output) {
+    $type = $this->dispatcher->getTypeObject($this->configuration);
+    $commands = $type->getDumpCommands($output);
+
+
     $settings = $this->getLocalSettingsFileLocation();
     $parts = explode(DIRECTORY_SEPARATOR, $settings);
     array_pop($parts);
@@ -100,7 +102,7 @@ class Aegir extends SourceBase {
       throw new \RuntimeException("Missing drushrc.php");
     }
     include $drushrc_location;
-    $this->dump($output, $this->configuration->get('aegir.ssh_login'), $options['db_name'], $options['db_user'], $options['db_passwd'], $options['db_host']);
+    $this->command($output, $this->configuration->get('aegir.ssh_login'), $options['db_name'], $options['db_user'], $options['db_passwd'], $options['db_host']);
     // Prep for import.
     $settings_backup_parts = $parts;
     $settings_backup_parts[] = 'aegir-settings.php';

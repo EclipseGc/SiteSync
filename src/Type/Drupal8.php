@@ -3,6 +3,7 @@
 namespace EclipseGc\SiteSync\Type;
 
 use EclipseGc\SiteSync\Dispatcher;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class Drupal8 implements TypeInterface {
 
@@ -29,12 +30,19 @@ class Drupal8 implements TypeInterface {
     $this->configuration = $dispatcher->getConfiguration();
   }
 
+  public function getDumpCommands(OutputInterface $output) : array {
+    $commands = [];
+    $commands[] = ['mysql', '-e "SHOW TABLES LIKE \'cache\_%\';"'];
+    $commands[] = ['mysqldump', '--ignore-table=db_name.table_name db_name > export.sql'];
+    $commands[] = "mysqldump --no-data db_name table_name >> export.sql";
+    return $commands;
+  }
+
   public function getProjectType(): string {
     return self::ID;
   }
 
-
-  public function getCompatibleSources() {
+  public function getCompatibleSources() : array {
     $sources = $this->dispatcher->getSources();
     foreach ($sources as $key => $source) {
       $configuration = clone $this->configuration;
